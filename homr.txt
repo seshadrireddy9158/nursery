@@ -1,0 +1,118 @@
+Main.java
+    1 import org.openqa.selenium.By;
+    2 import org.openqa.selenium.WebDriver;
+    3 import org.openqa.selenium.WebElement;
+    4 import org.testng.annotations.AfterTest;
+    5 import org.testng.annotations.BeforeTest;
+    6 import org.testng.annotations.DataProvider;
+    7 import org.testng.annotations.Test;
+    8 import org.testng.TestNG;
+    9 
+   10 import org.testng.ITestContext;
+   11 
+   12 public class Main {
+   13 
+   14 	//DO NOT CHANGE THE BELOW OBJECT CREATION
+   15 	public static WebDriver driver;
+   16 
+   17     // Use the below declared variables
+   18 	public static String result1;
+   19 
+   20 	public static String result2;
+   21 
+   22 	
+   23 	//Apply the required annotation with its essential attributes for inputs & specify the group
+   24     @Test(groups="A",dataProvider="getData")
+   25 	public void testMethodA(String Weight, String TransportMode) throws Exception {  
+   26 	    
+   27 	    driver=DriverSetup.getDriver();
+   28 	    //Create driver and assign it to 'static' driver variable
+   29 	    driver.findElement(By.id("weight")).sendKeys(Weight);
+   30 	    driver.findElement(By.id("air")).click();
+   31 	    driver.findElement(By.id("calculate")).click();
+   32 	    
+   33 	    //Pass the weight and choose the transport mode passed through data provider.
+   34     	//Retrieve the message displayed on page after submit. 
+   35     	//Store it in variable 'result1'
+   36     	result1=driver.findElement(By.xpath("html/body/center/div")).getText();
+   37         //result1="store the text message after form submit"
+   38         driver.close();
+   39         //close the driver
+   40 		
+   41 
+   42 	}
+   43 
+   44     @Test(groups="B",dataProvider="getData")
+   45     //Apply the required annotation with its essential attributes for inputs & specify the group
+   46 	public void testMethodB(String Weight, String TransportMode) throws Exception {  
+   47 	    driver=DriverSetup.getDriver();
+   48 	    //Create driver and assign it to 'static' driver variable
+   49 	    driver.findElement(By.id("weight")).sendKeys(Weight);
+   50 	    driver.findElement(By.id("ship")).click();
+   51 	    driver.findElement(By.id("calculate")).click();
+   52 	    result2=driver.findElement(By.xpath("html/body/center/div")).getText();
+   53 	    
+   54 		//Pass the weight and choose the transport mode passed by the data provider.
+   55     	//Retrieve the message displayed on page after submit. 
+   56     	//Store it in variable 'result2'
+   57         //result2="store the text message after form submit"
+   58         driver.close();
+   59         //close the driver
+   60         
+   61 		
+   62 	}
+   63 
+   64     @DataProvider(name="getData")
+   65 	//Apply the required annotation
+   66 	public Object[][] getDataFromDataprovider(ITestContext c){
+   67 	Object[][] cargoArray = null;
+   68 		for (String group : c.getIncludedGroups()) {
+   69     		if(group.equalsIgnoreCase("A")){
+   70     			cargoArray = new Object[][] { 
+   71     					{ "100", "air" }
+   72     				};
+   73     		    break;	
+   74     		}
+   75     		else if(group.equalsIgnoreCase("B"))
+   76     		{
+   77     			cargoArray = new Object[][] { 
+   78     						{ "200", "ship" } 
+   79     					};
+   80     		}
+   81     	    break;
+   82 	    }
+   83 	    return cargoArray;	
+   84 	}
+   85 
+   86 }
+testng.xml
+    1 <?xml version="1.0" encoding="UTF-8"?>
+    2 <suite name="Suite">
+    3  <test name="Test1">
+    4     <groups>
+    5       <run>
+    6         <include name="A" />
+    7         <exclude name="B" />
+    8       </run>
+    9     </groups>
+   10     <classes>
+   11         <class name="Main"/>
+   12       <!-- Add the class name to be tested -->
+   13     </classes>
+   14  </test>
+   15  <test name="Test2">
+   16     <groups>
+   17       <run>
+   18         <include name="B" />
+   19         <exclude name="A" />
+   20       </run>
+   21     </groups>
+   22     <classes>
+   23       <!-- Add the class name to be tested -->
+   24       <class name="Main"/>
+   25     </classes>
+   26  </test>
+   27 </suite>
+   28 
+   29 
+   30
